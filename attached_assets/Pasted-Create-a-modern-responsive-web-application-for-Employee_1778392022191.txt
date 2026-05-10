@@ -1,0 +1,176 @@
+Create a modern responsive web application for Employee Attendance and Biometric Tracking.
+
+Project Name:
+Smart Attendance Biometric System
+
+Purpose:
+The webapp will serve as a daily employee attendance system using biometric authentication or ID number login. It must track employee attendance including Time In, Time Out, Date, GPS Location, and Employee Details. Admin must be able to manage employees and export attendance reports.
+
+Technology Stack:
+- Frontend: React + Tailwind CSS
+- Backend: Node.js + Express
+- Database: PostgreSQL or MongoDB
+- Authentication: JWT Login
+- Deployment Ready
+- Mobile responsive design
+- Use browser geolocation API
+- Optional biometric support using fingerprint scanner or face recognition API
+
+Main Features:
+
+1. Employee Attendance Page
+- Employee can:
+  - Enter ID Number
+  - Use biometric authentication OR manual ID number
+  - Click Time In
+  - Click Time Out
+- Automatically capture:
+  - Current Date
+  - Current Time
+  - GPS Location (latitude and longitude)
+  - Device information
+- Prevent duplicate Time In on same day
+- Show success message after attendance recorded
+
+2. Employee Information
+Store the following:
+- Employee ID Number
+- Full Name
+- Department
+- Position
+- Contact Number
+- Profile Photo
+- Biometric ID (optional)
+
+3. GPS Location Tracking
+- Every attendance must save:
+  - Latitude
+  - Longitude
+  - Address (convert coordinates to readable location)
+- Display location in admin reports
+- Optional:
+  - Restrict attendance only inside company radius
+
+4. Admin Dashboard
+Admin can:
+- Login securely
+- View all attendance records
+- Search by:
+  - Date
+  - Employee ID
+  - Employee Name
+  - Department
+- View:
+  - Time In
+  - Time Out
+  - Total Working Hours
+  - Employee Location
+- Dashboard cards:
+  - Total Employees
+  - Present Today
+  - Late Employees
+  - Absent Employees
+
+5. Reports Module
+Admin can:
+- Export reports to:
+  - Excel
+  - CSV
+  - PDF
+- Filter reports by:
+  - Daily
+  - Weekly
+  - Monthly
+  - Employee
+- Report columns:
+  - Date
+  - Employee ID
+  - Employee Name
+  - Time In
+  - Time Out
+  - Working Hours
+  - GPS Location
+
+6. Attendance Rules
+- One Time In and One Time Out per day
+- Auto compute working hours
+- Late detection based on configurable office time
+- Optional overtime calculation
+
+7. UI/UX Requirements
+- Modern clean dashboard
+- Responsive for desktop and mobile
+- Dark/Light mode
+- Sidebar navigation
+- Real-time clock display
+- Professional attendance terminal interface
+
+8. Database Tables
+
+Employees Table:
+- id
+- employee_id
+- full_name
+- department
+- position
+- phone
+- profile_photo
+- biometric_id
+- created_at
+
+Attendance Table:
+- id
+- employee_id
+- date
+- time_in
+- time_out
+- latitude
+- longitude
+- location_address
+- working_hours
+- status
+- created_at
+
+Admin Table:
+- id
+- username
+- password_hash
+- role
+
+9. Additional Features
+- Email notifications for late attendance
+- Attendance history page for employees
+- QR Code attendance support
+- Face recognition support
+- Audit logs
+- API-ready architecture
+
+10. Security Requirements
+- Encrypt passwords
+- Secure API endpoints
+- Prevent fake GPS submissions
+- Session timeout
+- Role-based access control
+
+11. Deliverables
+Generate:
+- Full frontend and backend source code
+- Database schema
+- API routes
+- Authentication system
+- Sample dashboard UI
+- Attendance form
+- Export functionality
+- Deployment instructions
+
+12. Bonus Features
+- PWA support
+- Offline attendance sync
+- Camera capture during attendance
+- Live dashboard statistics
+- Multi-branch company support
+
+Design Theme:
+Use a professional corporate theme with blue and white colors, rounded cards, smooth animations, and modern dashboard layout.
+
+Build the application with clean scalable architecture and production-ready code.
