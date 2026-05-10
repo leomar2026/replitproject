@@ -175,6 +175,18 @@ export interface BiometricOptions {
   [key: string]: unknown;
 }
 
+export interface BiometricDiscoverOptions {
+  discoverKey: string;
+  [key: string]: unknown;
+}
+
+export type BiometricDiscoverFinishInputCredential = { [key: string]: unknown };
+
+export interface BiometricDiscoverFinishInput {
+  discoverKey: string;
+  credential: BiometricDiscoverFinishInputCredential;
+}
+
 export interface BiometricResult {
   verified: boolean;
 }

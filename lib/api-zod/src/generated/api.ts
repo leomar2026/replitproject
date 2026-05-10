@@ -466,6 +466,33 @@ export const BiometricAuthFinishResponse = zod.object({
 });
 
 /**
+ * @summary Begin discoverable biometric authentication (no employee ID required)
+ */
+export const BiometricDiscoverBeginResponse = zod.object({
+  discoverKey: zod.string(),
+});
+
+/**
+ * @summary Finish discoverable biometric authentication — returns employee on success
+ */
+export const BiometricDiscoverFinishBody = zod.object({
+  discoverKey: zod.string(),
+  credential: zod.record(zod.string(), zod.unknown()),
+});
+
+export const BiometricDiscoverFinishResponse = zod.object({
+  id: zod.number(),
+  employeeId: zod.string(),
+  fullName: zod.string(),
+  department: zod.string(),
+  position: zod.string(),
+  phone: zod.string().nullish(),
+  profilePhoto: zod.string().nullish(),
+  biometricId: zod.string().nullish(),
+  createdAt: zod.string().optional(),
+});
+
+/**
  * @summary Check if an employee has a registered biometric
  */
 export const BiometricStatusParams = zod.object({

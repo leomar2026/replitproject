@@ -1,4 +1,5 @@
 import { Router, type IRouter, type Request, type Response } from "express";
+import { randomUUID } from "crypto";
 import {
   generateRegistrationOptions,
   verifyRegistrationResponse,
@@ -221,6 +222,98 @@ router.post("/biometric/authenticate/finish", async (req: Request, res: Response
     .where(eq(biometricCredentialsTable.credentialId, storedCred.credentialId));
 
   challengeStore.delete(`auth:${employeeId}`);
+
+  const [employee] = await db
+    .select()
+    .from(employeesTable)
+    .where(eq(employeesTable.employeeId, storedCred.employeeId));
+
+  if (!employee) {
+    res.status(404).json({ error: "Employee not found" });
+    return;
+  }
+
+  res.json(employee);
+});
+
+router.post("/biometric/discover/begin", async (req: Request, res: Response): Promise<void> => {
+  const { rpID } = getRpInfo(req);
+  const discoverKey = randomUUID();
+
+  const options = await generateAuthenticationOptions({
+    rpID,
+    userVerification: "preferred",
+    allowCredentials: [],
+  });
+
+  challengeStore.set(`discover:${discoverKey}`, options.challenge);
+  setTimeout(() => challengeStore.delete(`discover:${discoverKey}`), 5 * 60 * 1000);
+
+  res.json({ ...options, discoverKey });
+});
+
+router.post("/biometric/discover/finish", async (req: Request, res: Response): Promise<void> => {
+  const { discoverKey, credential } = req.body as {
+    discoverKey?: string;
+    credential?: AuthenticationResponseJSON;
+  };
+
+  if (!discoverKey || !credential) {
+    res.status(400).json({ error: "discoverKey and credential required" });
+    return;
+  }
+
+  const expectedChallenge = challengeStore.get(`discover:${discoverKey}`);
+  if (!expectedChallenge) {
+    res.status(400).json({ error: "No pending challenge or it has expired" });
+    return;
+  }
+
+  const [storedCred] = await db
+    .select()
+    .from(biometricCredentialsTable)
+    .where(eq(biometricCredentialsTable.credentialId, credential.id));
+
+  if (!storedCred) {
+    res.status(400).json({ error: "Biometric not recognized. Please enter your Employee ID instead." });
+    return;
+  }
+
+  const { rpID, origin } = getRpInfo(req);
+
+  let verification;
+  try {
+    verification = await verifyAuthenticationResponse({
+      response: credential,
+      expectedChallenge,
+      expectedOrigin: origin,
+      expectedRPID: rpID,
+      credential: {
+        id: storedCred.credentialId,
+        publicKey: Buffer.from(storedCred.publicKey, "base64url"),
+        counter: storedCred.counter,
+        transports: storedCred.transports
+          ? (JSON.parse(storedCred.transports) as ("usb" | "ble" | "nfc" | "internal" | "hybrid")[])
+          : undefined,
+      },
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Verification failed";
+    res.status(400).json({ error: message });
+    return;
+  }
+
+  if (!verification.verified) {
+    res.status(400).json({ error: "Biometric verification failed" });
+    return;
+  }
+
+  await db
+    .update(biometricCredentialsTable)
+    .set({ counter: verification.authenticationInfo.newCounter })
+    .where(eq(biometricCredentialsTable.credentialId, storedCred.credentialId));
+
+  challengeStore.delete(`discover:${discoverKey}`);
 
   const [employee] = await db
     .select()

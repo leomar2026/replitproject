@@ -11,8 +11,8 @@ import {
   getGetTodayAttendanceQueryKey,
   useBiometricRegisterBegin,
   useBiometricRegisterFinish,
-  useBiometricAuthBegin,
-  useBiometricAuthFinish,
+  useBiometricDiscoverBegin,
+  useBiometricDiscoverFinish,
   useBiometricStatus,
   getBiometricStatusQueryKey,
 } from "@workspace/api-client-react";
@@ -116,8 +116,8 @@ export default function Terminal() {
   const timeOutMutation = useTimeOut();
   const registerBeginMutation = useBiometricRegisterBegin();
   const registerFinishMutation = useBiometricRegisterFinish();
-  const authBeginMutation = useBiometricAuthBegin();
-  const authFinishMutation = useBiometricAuthFinish();
+  const discoverBeginMutation = useBiometricDiscoverBegin();
+  const discoverFinishMutation = useBiometricDiscoverFinish();
 
   useEffect(() => {
     if (isLookupError && activeEmployeeId) {
@@ -209,25 +209,26 @@ export default function Terminal() {
     }
   };
 
-  const handleBiometricAuth = async (employeeIdForAuth: string) => {
+  const handleBiometricAuth = async () => {
     setBiometricWorking(true);
     setBiometricError("");
     try {
       const options = await new Promise<Record<string, unknown>>((resolve, reject) => {
-        authBeginMutation.mutate(
-          { data: { employeeId: employeeIdForAuth } },
-          {
-            onSuccess: (data) => resolve(data as Record<string, unknown>),
-            onError: (err) => reject(err),
-          }
-        );
+        discoverBeginMutation.mutate(undefined, {
+          onSuccess: (data) => resolve(data as Record<string, unknown>),
+          onError: (err) => reject(err),
+        });
       });
 
-      const credential = await startAuthentication({ optionsJSON: options as unknown as Parameters<typeof startAuthentication>[0]["optionsJSON"] });
+      const { discoverKey, ...authOptions } = options as { discoverKey: string } & Record<string, unknown>;
+
+      const credential = await startAuthentication({
+        optionsJSON: authOptions as unknown as Parameters<typeof startAuthentication>[0]["optionsJSON"],
+      });
 
       const emp = await new Promise<{ employeeId: string }>((resolve, reject) => {
-        authFinishMutation.mutate(
-          { data: { employeeId: employeeIdForAuth, credential: credential as unknown as Record<string, unknown> } },
+        discoverFinishMutation.mutate(
+          { data: { discoverKey, credential: credential as unknown as Record<string, unknown> } },
           {
             onSuccess: (data) => resolve(data as { employeeId: string }),
             onError: (err) => reject(err),
@@ -355,14 +356,7 @@ export default function Terminal() {
                     size="lg"
                     className="w-full h-14 text-lg gap-3 border-primary/30 text-primary hover:bg-primary/5"
                     disabled={biometricWorking}
-                    onClick={() => {
-                      const id = form.getValues("employeeId").trim();
-                      if (!id) {
-                        setBiometricError("Enter your Employee ID above first, then tap Use Biometric");
-                        return;
-                      }
-                      handleBiometricAuth(id);
-                    }}
+                    onClick={handleBiometricAuth}
                   >
                     {biometricWorking ? (
                       <Loader2 className="w-5 h-5 animate-spin" />

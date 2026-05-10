@@ -177,6 +177,9 @@ importers:
       '@simplewebauthn/server':
         specifier: ^13.3.0
         version: 13.3.0
+      '@simplewebauthn/types':
+        specifier: ^12.0.0
+        version: 12.0.0
       '@workspace/api-zod':
         specifier: workspace:*
         version: link:../../lib/api-zod

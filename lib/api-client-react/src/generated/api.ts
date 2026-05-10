@@ -22,6 +22,8 @@ import type {
   AttendanceSettingsUpdate,
   AttendanceTodayResponse,
   AuthResponse,
+  BiometricDiscoverFinishInput,
+  BiometricDiscoverOptions,
   BiometricEmployeeInput,
   BiometricFinishInput,
   BiometricOptions,
@@ -2161,6 +2163,174 @@ export const useBiometricAuthFinish = <
   TContext
 > => {
   return useMutation(getBiometricAuthFinishMutationOptions(options));
+};
+
+/**
+ * @summary Begin discoverable biometric authentication (no employee ID required)
+ */
+export const getBiometricDiscoverBeginUrl = () => {
+  return `/api/biometric/discover/begin`;
+};
+
+export const biometricDiscoverBegin = async (
+  options?: RequestInit,
+): Promise<BiometricDiscoverOptions> => {
+  return customFetch<BiometricDiscoverOptions>(getBiometricDiscoverBeginUrl(), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getBiometricDiscoverBeginMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof biometricDiscoverBegin>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof biometricDiscoverBegin>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ["biometricDiscoverBegin"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof biometricDiscoverBegin>>,
+    void
+  > = () => {
+    return biometricDiscoverBegin(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type BiometricDiscoverBeginMutationResult = NonNullable<
+  Awaited<ReturnType<typeof biometricDiscoverBegin>>
+>;
+
+export type BiometricDiscoverBeginMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Begin discoverable biometric authentication (no employee ID required)
+ */
+export const useBiometricDiscoverBegin = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof biometricDiscoverBegin>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof biometricDiscoverBegin>>,
+  TError,
+  void,
+  TContext
+> => {
+  return useMutation(getBiometricDiscoverBeginMutationOptions(options));
+};
+
+/**
+ * @summary Finish discoverable biometric authentication — returns employee on success
+ */
+export const getBiometricDiscoverFinishUrl = () => {
+  return `/api/biometric/discover/finish`;
+};
+
+export const biometricDiscoverFinish = async (
+  biometricDiscoverFinishInput: BiometricDiscoverFinishInput,
+  options?: RequestInit,
+): Promise<Employee> => {
+  return customFetch<Employee>(getBiometricDiscoverFinishUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(biometricDiscoverFinishInput),
+  });
+};
+
+export const getBiometricDiscoverFinishMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof biometricDiscoverFinish>>,
+    TError,
+    { data: BodyType<BiometricDiscoverFinishInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof biometricDiscoverFinish>>,
+  TError,
+  { data: BodyType<BiometricDiscoverFinishInput> },
+  TContext
+> => {
+  const mutationKey = ["biometricDiscoverFinish"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof biometricDiscoverFinish>>,
+    { data: BodyType<BiometricDiscoverFinishInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return biometricDiscoverFinish(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type BiometricDiscoverFinishMutationResult = NonNullable<
+  Awaited<ReturnType<typeof biometricDiscoverFinish>>
+>;
+export type BiometricDiscoverFinishMutationBody =
+  BodyType<BiometricDiscoverFinishInput>;
+export type BiometricDiscoverFinishMutationError = ErrorType<void>;
+
+/**
+ * @summary Finish discoverable biometric authentication — returns employee on success
+ */
+export const useBiometricDiscoverFinish = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof biometricDiscoverFinish>>,
+    TError,
+    { data: BodyType<BiometricDiscoverFinishInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof biometricDiscoverFinish>>,
+  TError,
+  { data: BodyType<BiometricDiscoverFinishInput> },
+  TContext
+> => {
+  return useMutation(getBiometricDiscoverFinishMutationOptions(options));
 };
 
 /**

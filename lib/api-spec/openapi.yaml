@@ -566,6 +566,40 @@ paths:
         "400":
           description: Verification failed
 
+  /biometric/discover/begin:
+    post:
+      operationId: biometricDiscoverBegin
+      tags: [biometric]
+      summary: Begin discoverable biometric authentication (no employee ID required)
+      responses:
+        "200":
+          description: Authentication options with discover key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BiometricDiscoverOptions"
+
+  /biometric/discover/finish:
+    post:
+      operationId: biometricDiscoverFinish
+      tags: [biometric]
+      summary: Finish discoverable biometric authentication — returns employee on success
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BiometricDiscoverFinishInput"
+      responses:
+        "200":
+          description: Authenticated employee
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Employee"
+        "400":
+          description: Verification failed
+
   /biometric/status/{employeeId}:
     get:
       operationId: biometricStatus
@@ -845,6 +879,24 @@ components:
     BiometricOptions:
       type: object
       additionalProperties: true
+
+    BiometricDiscoverOptions:
+      type: object
+      required: [discoverKey]
+      properties:
+        discoverKey:
+          type: string
+      additionalProperties: true
+
+    BiometricDiscoverFinishInput:
+      type: object
+      required: [discoverKey, credential]
+      properties:
+        discoverKey:
+          type: string
+        credential:
+          type: object
+          additionalProperties: true
 
     BiometricResult:
       type: object
