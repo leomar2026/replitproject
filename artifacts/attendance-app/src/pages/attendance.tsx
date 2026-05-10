@@ -127,8 +127,8 @@ export default function Attendance() {
                       <TableCell className="font-mono text-sm">{record.employeeId}</TableCell>
                       <TableCell className="font-medium">{record.employeeName}</TableCell>
                       <TableCell>{record.department}</TableCell>
-                      <TableCell>{record.timeIn ? format(new Date(record.timeIn), "hh:mm a") : "--"}</TableCell>
-                      <TableCell>{record.timeOut ? format(new Date(record.timeOut), "hh:mm a") : "--"}</TableCell>
+                      <TableCell>{record.timeIn ? format(new Date(`${record.date}T${record.timeIn}`), "hh:mm a") : "--"}</TableCell>
+                      <TableCell>{record.timeOut ? format(new Date(`${record.date}T${record.timeOut}`), "hh:mm a") : "--"}</TableCell>
                       <TableCell className="max-w-[200px] truncate" title={record.locationAddress || ""}>
                         {record.locationAddress || "--"}
                       </TableCell>
