@@ -5,7 +5,7 @@ import { useGetMe } from "@workspace/api-client-react";
 import { clearAuthToken } from "@/lib/auth";
 import { LayoutDashboard, Users, Clock, Settings, LogOut, Sun, Moon } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
-import logoSrc from "@assets/Logo_1778392979899.png";
+import logoSrc from "@assets/Logo_1778397631519.png";
 
 export function AdminLayout({ children }: { children: ReactNode }) {
   const [location, setLocation] = useLocation();

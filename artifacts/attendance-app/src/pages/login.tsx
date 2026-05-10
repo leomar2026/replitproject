@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Lock } from "lucide-react";
-import logoSrc from "@assets/Logo_1778392979899.png";
+import logoSrc from "@assets/Logo_1778397631519.png";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),

@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Search, CheckCircle2, User, CalendarDays, Fingerprint, Loader2, ShieldCheck } from "lucide-react";
-import logoSrc from "@assets/Logo_1778392979899.png";
+import logoSrc from "@assets/Logo_1778397631519.png";
 import { startRegistration, startAuthentication } from "@simplewebauthn/browser";
 import type { RegistrationResponseJSON, AuthenticationResponseJSON } from "@simplewebauthn/types";
 
