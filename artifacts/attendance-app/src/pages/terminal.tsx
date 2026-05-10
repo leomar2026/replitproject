@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Clock, MapPin, Search, CheckCircle2, User, CalendarDays } from "lucide-react";
+import logoSrc from "@assets/Logo_1778392979899.png";
 
 const searchSchema = z.object({
   employeeId: z.string().min(1, "Employee ID is required")
@@ -105,9 +106,7 @@ export default function Terminal() {
     <div className="min-h-screen bg-muted/20 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-6">
-            <Clock className="w-8 h-8" />
-          </div>
+          <img src={logoSrc} alt="Electro Power" className="h-16 w-16 rounded-2xl object-cover mx-auto mb-6 shadow-md" />
           <h1 className="text-6xl font-bold tracking-tight text-foreground font-mono tabular-nums">
             {currentTime.toLocaleTimeString('en-US', { hour12: false })}
           </h1>
