@@ -43,6 +43,25 @@ async function getStatus(timeIn: string): Promise<string> {
   return timeInMinutes > officeMinutes ? "late" : "present";
 }
 
+const ATTENDANCE_SELECT = {
+  id: attendanceTable.id,
+  employeeId: attendanceTable.employeeId,
+  employeeName: employeesTable.fullName,
+  department: employeesTable.department,
+  date: attendanceTable.date,
+  timeIn: attendanceTable.timeIn,
+  timeOut: attendanceTable.timeOut,
+  latitude: attendanceTable.latitude,
+  longitude: attendanceTable.longitude,
+  locationAddress: attendanceTable.locationAddress,
+  timeOutLatitude: attendanceTable.timeOutLatitude,
+  timeOutLongitude: attendanceTable.timeOutLongitude,
+  timeOutLocationAddress: attendanceTable.timeOutLocationAddress,
+  workingHours: attendanceTable.workingHours,
+  status: attendanceTable.status,
+  createdAt: attendanceTable.createdAt,
+};
+
 router.get("/attendance", requireAuth, async (req: Request, res: Response): Promise<void> => {
   const params = ListAttendanceQueryParams.safeParse(req.query);
   if (!params.success) {
@@ -53,21 +72,7 @@ router.get("/attendance", requireAuth, async (req: Request, res: Response): Prom
   const { date, employeeId, department, from, to, status } = params.data;
 
   let query = db
-    .select({
-      id: attendanceTable.id,
-      employeeId: attendanceTable.employeeId,
-      employeeName: employeesTable.fullName,
-      department: employeesTable.department,
-      date: attendanceTable.date,
-      timeIn: attendanceTable.timeIn,
-      timeOut: attendanceTable.timeOut,
-      latitude: attendanceTable.latitude,
-      longitude: attendanceTable.longitude,
-      locationAddress: attendanceTable.locationAddress,
-      workingHours: attendanceTable.workingHours,
-      status: attendanceTable.status,
-      createdAt: attendanceTable.createdAt,
-    })
+    .select(ATTENDANCE_SELECT)
     .from(attendanceTable)
     .leftJoin(employeesTable, eq(attendanceTable.employeeId, employeesTable.employeeId))
     .$dynamic();
@@ -169,9 +174,9 @@ router.patch("/attendance/:id/timeout", async (req: Request, res: Response): Pro
   const workingHours = computeWorkingHours(existing.timeIn, timeOut);
 
   const updates: Record<string, unknown> = { timeOut, workingHours };
-  if (parsed.data.latitude != null) updates.latitude = parsed.data.latitude;
-  if (parsed.data.longitude != null) updates.longitude = parsed.data.longitude;
-  if (parsed.data.locationAddress) updates.locationAddress = parsed.data.locationAddress;
+  if (parsed.data.timeOutLatitude != null) updates.timeOutLatitude = parsed.data.timeOutLatitude;
+  if (parsed.data.timeOutLongitude != null) updates.timeOutLongitude = parsed.data.timeOutLongitude;
+  if (parsed.data.timeOutLocationAddress) updates.timeOutLocationAddress = parsed.data.timeOutLocationAddress;
 
   const [record] = await db
     .update(attendanceTable)
@@ -201,21 +206,7 @@ router.get("/attendance/today/:employeeId", async (req: Request, res: Response):
 
   const today = getToday();
   const [record] = await db
-    .select({
-      id: attendanceTable.id,
-      employeeId: attendanceTable.employeeId,
-      employeeName: employeesTable.fullName,
-      department: employeesTable.department,
-      date: attendanceTable.date,
-      timeIn: attendanceTable.timeIn,
-      timeOut: attendanceTable.timeOut,
-      latitude: attendanceTable.latitude,
-      longitude: attendanceTable.longitude,
-      locationAddress: attendanceTable.locationAddress,
-      workingHours: attendanceTable.workingHours,
-      status: attendanceTable.status,
-      createdAt: attendanceTable.createdAt,
-    })
+    .select(ATTENDANCE_SELECT)
     .from(attendanceTable)
     .leftJoin(employeesTable, eq(attendanceTable.employeeId, employeesTable.employeeId))
     .where(and(eq(attendanceTable.employeeId, params.data.employeeId), eq(attendanceTable.date, today)));
@@ -233,21 +224,7 @@ router.get("/attendance/history", requireAuth, async (req: Request, res: Respons
   const { employeeId, from, to } = params.data;
 
   let query = db
-    .select({
-      id: attendanceTable.id,
-      employeeId: attendanceTable.employeeId,
-      employeeName: employeesTable.fullName,
-      department: employeesTable.department,
-      date: attendanceTable.date,
-      timeIn: attendanceTable.timeIn,
-      timeOut: attendanceTable.timeOut,
-      latitude: attendanceTable.latitude,
-      longitude: attendanceTable.longitude,
-      locationAddress: attendanceTable.locationAddress,
-      workingHours: attendanceTable.workingHours,
-      status: attendanceTable.status,
-      createdAt: attendanceTable.createdAt,
-    })
+    .select(ATTENDANCE_SELECT)
     .from(attendanceTable)
     .leftJoin(employeesTable, eq(attendanceTable.employeeId, employeesTable.employeeId))
     .$dynamic();

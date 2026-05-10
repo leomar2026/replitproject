@@ -25,6 +25,12 @@ export interface AttendanceRecord {
   /** @nullable */
   locationAddress?: string | null;
   /** @nullable */
+  timeOutLatitude?: number | null;
+  /** @nullable */
+  timeOutLongitude?: number | null;
+  /** @nullable */
+  timeOutLocationAddress?: string | null;
+  /** @nullable */
   workingHours?: number | null;
   status?: AttendanceRecordStatus;
   createdAt?: string;

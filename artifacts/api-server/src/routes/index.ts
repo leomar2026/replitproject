@@ -5,6 +5,7 @@ import employeesRouter from "./employees";
 import attendanceRouter from "./attendance";
 import dashboardRouter from "./dashboard";
 import reportsRouter from "./reports";
+import biometricRouter from "./biometric";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use(employeesRouter);
 router.use(attendanceRouter);
 router.use(dashboardRouter);
 router.use(reportsRouter);
+router.use(biometricRouter);
 
 export default router;

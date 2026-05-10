@@ -93,6 +93,12 @@ export interface AttendanceRecord {
   /** @nullable */
   locationAddress?: string | null;
   /** @nullable */
+  timeOutLatitude?: number | null;
+  /** @nullable */
+  timeOutLongitude?: number | null;
+  /** @nullable */
+  timeOutLocationAddress?: string | null;
+  /** @nullable */
   workingHours?: number | null;
   status?: AttendanceRecordStatus;
   createdAt?: string;
@@ -113,6 +119,9 @@ export interface TimeOutInput {
   latitude?: number;
   longitude?: number;
   locationAddress?: string;
+  timeOutLatitude?: number;
+  timeOutLongitude?: number;
+  timeOutLocationAddress?: string;
 }
 
 export interface DashboardStats {
@@ -149,6 +158,30 @@ export interface AttendanceSettingsUpdate {
   lateThresholdMinutes?: number;
   officeEndTime?: string;
   workdayHours?: number;
+}
+
+export interface BiometricEmployeeInput {
+  employeeId: string;
+}
+
+export type BiometricFinishInputCredential = { [key: string]: unknown };
+
+export interface BiometricFinishInput {
+  employeeId: string;
+  credential: BiometricFinishInputCredential;
+}
+
+export interface BiometricOptions {
+  [key: string]: unknown;
+}
+
+export interface BiometricResult {
+  verified: boolean;
+}
+
+export interface BiometricStatusData {
+  registered: boolean;
+  credentialCount?: number;
 }
 
 export type ListEmployeesParams = {

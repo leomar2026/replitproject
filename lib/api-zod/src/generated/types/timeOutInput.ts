@@ -10,4 +10,7 @@ export interface TimeOutInput {
   latitude?: number;
   longitude?: number;
   locationAddress?: string;
+  timeOutLatitude?: number;
+  timeOutLongitude?: number;
+  timeOutLocationAddress?: string;
 }

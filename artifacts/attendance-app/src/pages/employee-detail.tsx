@@ -1,4 +1,4 @@
-import { useGetEmployee, useListEmployeeHistory } from "@workspace/api-client-react";
+import { useGetEmployee, useListEmployeeHistory, getListEmployeeHistoryQueryKey } from "@workspace/api-client-react";
 import { useParams } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -13,7 +13,7 @@ export default function EmployeeDetail() {
   const { data: employee, isLoading: empLoading } = useGetEmployee(id);
   const { data: history, isLoading: histLoading } = useListEmployeeHistory(
     { employeeId: employee?.employeeId || "" },
-    { query: { enabled: !!employee?.employeeId } }
+    { query: { enabled: !!employee?.employeeId, queryKey: getListEmployeeHistoryQueryKey({ employeeId: employee?.employeeId || "" }) } }
   );
 
   if (empLoading) return <div className="animate-pulse h-96 bg-muted rounded-xl"></div>;

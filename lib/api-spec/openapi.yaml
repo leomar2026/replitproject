@@ -19,6 +19,8 @@ tags:
     description: Dashboard statistics
   - name: reports
     description: Reporting and export
+  - name: biometric
+    description: Biometric (WebAuthn) registration and authentication
 
 paths:
   /healthz:
@@ -480,6 +482,109 @@ paths:
               schema:
                 $ref: "#/components/schemas/AttendanceSettings"
 
+  /biometric/register/begin:
+    post:
+      operationId: biometricRegisterBegin
+      tags: [biometric]
+      summary: Begin WebAuthn biometric registration for an employee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BiometricEmployeeInput"
+      responses:
+        "200":
+          description: Registration options
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BiometricOptions"
+        "404":
+          description: Employee not found
+
+  /biometric/register/finish:
+    post:
+      operationId: biometricRegisterFinish
+      tags: [biometric]
+      summary: Finish WebAuthn biometric registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BiometricFinishInput"
+      responses:
+        "200":
+          description: Biometric registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BiometricResult"
+        "400":
+          description: Verification failed
+
+  /biometric/authenticate/begin:
+    post:
+      operationId: biometricAuthBegin
+      tags: [biometric]
+      summary: Begin WebAuthn biometric authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BiometricEmployeeInput"
+      responses:
+        "200":
+          description: Authentication options
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BiometricOptions"
+        "404":
+          description: No biometric registered for this employee
+
+  /biometric/authenticate/finish:
+    post:
+      operationId: biometricAuthFinish
+      tags: [biometric]
+      summary: Finish WebAuthn biometric authentication — returns employee on success
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BiometricFinishInput"
+      responses:
+        "200":
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Employee"
+        "400":
+          description: Verification failed
+
+  /biometric/status/{employeeId}:
+    get:
+      operationId: biometricStatus
+      tags: [biometric]
+      summary: Check if an employee has a registered biometric
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Biometric status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BiometricStatusData"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -603,6 +708,12 @@ components:
           type: ["number", "null"]
         locationAddress:
           type: ["string", "null"]
+        timeOutLatitude:
+          type: ["number", "null"]
+        timeOutLongitude:
+          type: ["number", "null"]
+        timeOutLocationAddress:
+          type: ["string", "null"]
         workingHours:
           type: ["number", "null"]
         status:
@@ -640,6 +751,12 @@ components:
         longitude:
           type: number
         locationAddress:
+          type: string
+        timeOutLatitude:
+          type: number
+        timeOutLongitude:
+          type: number
+        timeOutLocationAddress:
           type: string
 
     DashboardStats:
@@ -707,3 +824,40 @@ components:
           type: string
         workdayHours:
           type: number
+
+    BiometricEmployeeInput:
+      type: object
+      required: [employeeId]
+      properties:
+        employeeId:
+          type: string
+
+    BiometricFinishInput:
+      type: object
+      required: [employeeId, credential]
+      properties:
+        employeeId:
+          type: string
+        credential:
+          type: object
+          additionalProperties: true
+
+    BiometricOptions:
+      type: object
+      additionalProperties: true
+
+    BiometricResult:
+      type: object
+      required: [verified]
+      properties:
+        verified:
+          type: boolean
+
+    BiometricStatusData:
+      type: object
+      required: [registered]
+      properties:
+        registered:
+          type: boolean
+        credentialCount:
+          type: integer

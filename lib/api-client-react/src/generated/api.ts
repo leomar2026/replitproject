@@ -22,6 +22,11 @@ import type {
   AttendanceSettingsUpdate,
   AttendanceTodayResponse,
   AuthResponse,
+  BiometricEmployeeInput,
+  BiometricFinishInput,
+  BiometricOptions,
+  BiometricResult,
+  BiometricStatusData,
   DailyCount,
   DashboardStats,
   DepartmentStat,
@@ -1811,3 +1816,437 @@ export const useUpdateSettings = <
 > => {
   return useMutation(getUpdateSettingsMutationOptions(options));
 };
+
+/**
+ * @summary Begin WebAuthn biometric registration for an employee
+ */
+export const getBiometricRegisterBeginUrl = () => {
+  return `/api/biometric/register/begin`;
+};
+
+export const biometricRegisterBegin = async (
+  biometricEmployeeInput: BiometricEmployeeInput,
+  options?: RequestInit,
+): Promise<BiometricOptions> => {
+  return customFetch<BiometricOptions>(getBiometricRegisterBeginUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(biometricEmployeeInput),
+  });
+};
+
+export const getBiometricRegisterBeginMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof biometricRegisterBegin>>,
+    TError,
+    { data: BodyType<BiometricEmployeeInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof biometricRegisterBegin>>,
+  TError,
+  { data: BodyType<BiometricEmployeeInput> },
+  TContext
+> => {
+  const mutationKey = ["biometricRegisterBegin"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof biometricRegisterBegin>>,
+    { data: BodyType<BiometricEmployeeInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return biometricRegisterBegin(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type BiometricRegisterBeginMutationResult = NonNullable<
+  Awaited<ReturnType<typeof biometricRegisterBegin>>
+>;
+export type BiometricRegisterBeginMutationBody =
+  BodyType<BiometricEmployeeInput>;
+export type BiometricRegisterBeginMutationError = ErrorType<void>;
+
+/**
+ * @summary Begin WebAuthn biometric registration for an employee
+ */
+export const useBiometricRegisterBegin = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof biometricRegisterBegin>>,
+    TError,
+    { data: BodyType<BiometricEmployeeInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof biometricRegisterBegin>>,
+  TError,
+  { data: BodyType<BiometricEmployeeInput> },
+  TContext
+> => {
+  return useMutation(getBiometricRegisterBeginMutationOptions(options));
+};
+
+/**
+ * @summary Finish WebAuthn biometric registration
+ */
+export const getBiometricRegisterFinishUrl = () => {
+  return `/api/biometric/register/finish`;
+};
+
+export const biometricRegisterFinish = async (
+  biometricFinishInput: BiometricFinishInput,
+  options?: RequestInit,
+): Promise<BiometricResult> => {
+  return customFetch<BiometricResult>(getBiometricRegisterFinishUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(biometricFinishInput),
+  });
+};
+
+export const getBiometricRegisterFinishMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof biometricRegisterFinish>>,
+    TError,
+    { data: BodyType<BiometricFinishInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof biometricRegisterFinish>>,
+  TError,
+  { data: BodyType<BiometricFinishInput> },
+  TContext
+> => {
+  const mutationKey = ["biometricRegisterFinish"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof biometricRegisterFinish>>,
+    { data: BodyType<BiometricFinishInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return biometricRegisterFinish(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type BiometricRegisterFinishMutationResult = NonNullable<
+  Awaited<ReturnType<typeof biometricRegisterFinish>>
+>;
+export type BiometricRegisterFinishMutationBody =
+  BodyType<BiometricFinishInput>;
+export type BiometricRegisterFinishMutationError = ErrorType<void>;
+
+/**
+ * @summary Finish WebAuthn biometric registration
+ */
+export const useBiometricRegisterFinish = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof biometricRegisterFinish>>,
+    TError,
+    { data: BodyType<BiometricFinishInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof biometricRegisterFinish>>,
+  TError,
+  { data: BodyType<BiometricFinishInput> },
+  TContext
+> => {
+  return useMutation(getBiometricRegisterFinishMutationOptions(options));
+};
+
+/**
+ * @summary Begin WebAuthn biometric authentication
+ */
+export const getBiometricAuthBeginUrl = () => {
+  return `/api/biometric/authenticate/begin`;
+};
+
+export const biometricAuthBegin = async (
+  biometricEmployeeInput: BiometricEmployeeInput,
+  options?: RequestInit,
+): Promise<BiometricOptions> => {
+  return customFetch<BiometricOptions>(getBiometricAuthBeginUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(biometricEmployeeInput),
+  });
+};
+
+export const getBiometricAuthBeginMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof biometricAuthBegin>>,
+    TError,
+    { data: BodyType<BiometricEmployeeInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof biometricAuthBegin>>,
+  TError,
+  { data: BodyType<BiometricEmployeeInput> },
+  TContext
+> => {
+  const mutationKey = ["biometricAuthBegin"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof biometricAuthBegin>>,
+    { data: BodyType<BiometricEmployeeInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return biometricAuthBegin(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type BiometricAuthBeginMutationResult = NonNullable<
+  Awaited<ReturnType<typeof biometricAuthBegin>>
+>;
+export type BiometricAuthBeginMutationBody = BodyType<BiometricEmployeeInput>;
+export type BiometricAuthBeginMutationError = ErrorType<void>;
+
+/**
+ * @summary Begin WebAuthn biometric authentication
+ */
+export const useBiometricAuthBegin = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof biometricAuthBegin>>,
+    TError,
+    { data: BodyType<BiometricEmployeeInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof biometricAuthBegin>>,
+  TError,
+  { data: BodyType<BiometricEmployeeInput> },
+  TContext
+> => {
+  return useMutation(getBiometricAuthBeginMutationOptions(options));
+};
+
+/**
+ * @summary Finish WebAuthn biometric authentication — returns employee on success
+ */
+export const getBiometricAuthFinishUrl = () => {
+  return `/api/biometric/authenticate/finish`;
+};
+
+export const biometricAuthFinish = async (
+  biometricFinishInput: BiometricFinishInput,
+  options?: RequestInit,
+): Promise<Employee> => {
+  return customFetch<Employee>(getBiometricAuthFinishUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(biometricFinishInput),
+  });
+};
+
+export const getBiometricAuthFinishMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof biometricAuthFinish>>,
+    TError,
+    { data: BodyType<BiometricFinishInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof biometricAuthFinish>>,
+  TError,
+  { data: BodyType<BiometricFinishInput> },
+  TContext
+> => {
+  const mutationKey = ["biometricAuthFinish"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof biometricAuthFinish>>,
+    { data: BodyType<BiometricFinishInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return biometricAuthFinish(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type BiometricAuthFinishMutationResult = NonNullable<
+  Awaited<ReturnType<typeof biometricAuthFinish>>
+>;
+export type BiometricAuthFinishMutationBody = BodyType<BiometricFinishInput>;
+export type BiometricAuthFinishMutationError = ErrorType<void>;
+
+/**
+ * @summary Finish WebAuthn biometric authentication — returns employee on success
+ */
+export const useBiometricAuthFinish = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof biometricAuthFinish>>,
+    TError,
+    { data: BodyType<BiometricFinishInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof biometricAuthFinish>>,
+  TError,
+  { data: BodyType<BiometricFinishInput> },
+  TContext
+> => {
+  return useMutation(getBiometricAuthFinishMutationOptions(options));
+};
+
+/**
+ * @summary Check if an employee has a registered biometric
+ */
+export const getBiometricStatusUrl = (employeeId: string) => {
+  return `/api/biometric/status/${employeeId}`;
+};
+
+export const biometricStatus = async (
+  employeeId: string,
+  options?: RequestInit,
+): Promise<BiometricStatusData> => {
+  return customFetch<BiometricStatusData>(getBiometricStatusUrl(employeeId), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getBiometricStatusQueryKey = (employeeId: string) => {
+  return [`/api/biometric/status/${employeeId}`] as const;
+};
+
+export const getBiometricStatusQueryOptions = <
+  TData = Awaited<ReturnType<typeof biometricStatus>>,
+  TError = ErrorType<unknown>,
+>(
+  employeeId: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof biometricStatus>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getBiometricStatusQueryKey(employeeId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof biometricStatus>>> = ({
+    signal,
+  }) => biometricStatus(employeeId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!employeeId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof biometricStatus>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type BiometricStatusQueryResult = NonNullable<
+  Awaited<ReturnType<typeof biometricStatus>>
+>;
+export type BiometricStatusQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Check if an employee has a registered biometric
+ */
+
+export function useBiometricStatus<
+  TData = Awaited<ReturnType<typeof biometricStatus>>,
+  TError = ErrorType<unknown>,
+>(
+  employeeId: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof biometricStatus>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getBiometricStatusQueryOptions(employeeId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}

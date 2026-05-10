@@ -170,6 +170,9 @@ export const ListAttendanceResponseItem = zod.object({
   latitude: zod.number().nullish(),
   longitude: zod.number().nullish(),
   locationAddress: zod.string().nullish(),
+  timeOutLatitude: zod.number().nullish(),
+  timeOutLongitude: zod.number().nullish(),
+  timeOutLocationAddress: zod.string().nullish(),
   workingHours: zod.number().nullish(),
   status: zod.enum(["present", "late", "absent", "half_day"]).optional(),
   createdAt: zod.string().optional(),
@@ -197,6 +200,9 @@ export const TimeOutBody = zod.object({
   latitude: zod.number().optional(),
   longitude: zod.number().optional(),
   locationAddress: zod.string().optional(),
+  timeOutLatitude: zod.number().optional(),
+  timeOutLongitude: zod.number().optional(),
+  timeOutLocationAddress: zod.string().optional(),
 });
 
 export const TimeOutResponse = zod.object({
@@ -210,6 +216,9 @@ export const TimeOutResponse = zod.object({
   latitude: zod.number().nullish(),
   longitude: zod.number().nullish(),
   locationAddress: zod.string().nullish(),
+  timeOutLatitude: zod.number().nullish(),
+  timeOutLongitude: zod.number().nullish(),
+  timeOutLocationAddress: zod.string().nullish(),
   workingHours: zod.number().nullish(),
   status: zod.enum(["present", "late", "absent", "half_day"]).optional(),
   createdAt: zod.string().optional(),
@@ -236,6 +245,9 @@ export const GetTodayAttendanceResponse = zod.object({
         latitude: zod.number().nullish(),
         longitude: zod.number().nullish(),
         locationAddress: zod.string().nullish(),
+        timeOutLatitude: zod.number().nullish(),
+        timeOutLongitude: zod.number().nullish(),
+        timeOutLocationAddress: zod.string().nullish(),
         workingHours: zod.number().nullish(),
         status: zod.enum(["present", "late", "absent", "half_day"]).optional(),
         createdAt: zod.string().optional(),
@@ -265,6 +277,9 @@ export const ListEmployeeHistoryResponseItem = zod.object({
   latitude: zod.number().nullish(),
   longitude: zod.number().nullish(),
   locationAddress: zod.string().nullish(),
+  timeOutLatitude: zod.number().nullish(),
+  timeOutLongitude: zod.number().nullish(),
+  timeOutLocationAddress: zod.string().nullish(),
   workingHours: zod.number().nullish(),
   status: zod.enum(["present", "late", "absent", "half_day"]).optional(),
   createdAt: zod.string().optional(),
@@ -323,6 +338,9 @@ export const GetRecentActivityResponseItem = zod.object({
   latitude: zod.number().nullish(),
   longitude: zod.number().nullish(),
   locationAddress: zod.string().nullish(),
+  timeOutLatitude: zod.number().nullish(),
+  timeOutLongitude: zod.number().nullish(),
+  timeOutLocationAddress: zod.string().nullish(),
   workingHours: zod.number().nullish(),
   status: zod.enum(["present", "late", "absent", "half_day"]).optional(),
   createdAt: zod.string().optional(),
@@ -353,6 +371,9 @@ export const ExportReportResponseItem = zod.object({
   latitude: zod.number().nullish(),
   longitude: zod.number().nullish(),
   locationAddress: zod.string().nullish(),
+  timeOutLatitude: zod.number().nullish(),
+  timeOutLongitude: zod.number().nullish(),
+  timeOutLocationAddress: zod.string().nullish(),
   workingHours: zod.number().nullish(),
   status: zod.enum(["present", "late", "absent", "half_day"]).optional(),
   createdAt: zod.string().optional(),
@@ -386,4 +407,72 @@ export const UpdateSettingsResponse = zod.object({
   lateThresholdMinutes: zod.number(),
   officeEndTime: zod.string().optional(),
   workdayHours: zod.number().optional(),
+});
+
+/**
+ * @summary Begin WebAuthn biometric registration for an employee
+ */
+export const BiometricRegisterBeginBody = zod.object({
+  employeeId: zod.string(),
+});
+
+export const BiometricRegisterBeginResponse = zod.record(
+  zod.string(),
+  zod.unknown(),
+);
+
+/**
+ * @summary Finish WebAuthn biometric registration
+ */
+export const BiometricRegisterFinishBody = zod.object({
+  employeeId: zod.string(),
+  credential: zod.record(zod.string(), zod.unknown()),
+});
+
+export const BiometricRegisterFinishResponse = zod.object({
+  verified: zod.boolean(),
+});
+
+/**
+ * @summary Begin WebAuthn biometric authentication
+ */
+export const BiometricAuthBeginBody = zod.object({
+  employeeId: zod.string(),
+});
+
+export const BiometricAuthBeginResponse = zod.record(
+  zod.string(),
+  zod.unknown(),
+);
+
+/**
+ * @summary Finish WebAuthn biometric authentication — returns employee on success
+ */
+export const BiometricAuthFinishBody = zod.object({
+  employeeId: zod.string(),
+  credential: zod.record(zod.string(), zod.unknown()),
+});
+
+export const BiometricAuthFinishResponse = zod.object({
+  id: zod.number(),
+  employeeId: zod.string(),
+  fullName: zod.string(),
+  department: zod.string(),
+  position: zod.string(),
+  phone: zod.string().nullish(),
+  profilePhoto: zod.string().nullish(),
+  biometricId: zod.string().nullish(),
+  createdAt: zod.string().optional(),
+});
+
+/**
+ * @summary Check if an employee has a registered biometric
+ */
+export const BiometricStatusParams = zod.object({
+  employeeId: zod.coerce.string(),
+});
+
+export const BiometricStatusResponse = zod.object({
+  registered: zod.boolean(),
+  credentialCount: zod.number().optional(),
 });
