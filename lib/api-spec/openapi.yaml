@@ -850,6 +850,20 @@ components:
           type: string
         workdayHours:
           type: number
+        mondayWorkdayHours:
+          type: ["number", "null"]
+        tuesdayWorkdayHours:
+          type: ["number", "null"]
+        wednesdayWorkdayHours:
+          type: ["number", "null"]
+        thursdayWorkdayHours:
+          type: ["number", "null"]
+        fridayWorkdayHours:
+          type: ["number", "null"]
+        saturdayWorkdayHours:
+          type: ["number", "null"]
+        sundayWorkdayHours:
+          type: ["number", "null"]
 
     AttendanceSettingsUpdate:
       type: object
@@ -862,6 +876,20 @@ components:
           type: string
         workdayHours:
           type: number
+        mondayWorkdayHours:
+          type: ["number", "null"]
+        tuesdayWorkdayHours:
+          type: ["number", "null"]
+        wednesdayWorkdayHours:
+          type: ["number", "null"]
+        thursdayWorkdayHours:
+          type: ["number", "null"]
+        fridayWorkdayHours:
+          type: ["number", "null"]
+        saturdayWorkdayHours:
+          type: ["number", "null"]
+        sundayWorkdayHours:
+          type: ["number", "null"]
 
     BiometricEmployeeInput:
       type: object

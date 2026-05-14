@@ -48,10 +48,24 @@ router.get("/reports/export", requireAuth, async (req: Request, res: Response): 
   const rawRecords = await query.orderBy(attendanceTable.date);
 
   const [settings] = await db.select().from(settingsTable).limit(1);
-  const workdayHours = settings?.workdayHours ?? 8;
+
+  function getDayWorkdayHours(date: string): number {
+    const dow = new Date(date + "T00:00:00").getDay();
+    const overrides = [
+      settings?.sundayWorkdayHours,
+      settings?.mondayWorkdayHours,
+      settings?.tuesdayWorkdayHours,
+      settings?.wednesdayWorkdayHours,
+      settings?.thursdayWorkdayHours,
+      settings?.fridayWorkdayHours,
+      settings?.saturdayWorkdayHours,
+    ];
+    return overrides[dow] ?? settings?.workdayHours ?? 8;
+  }
 
   const records = rawRecords.map((r) => {
     const wh = r.workingHours;
+    const workdayHours = getDayWorkdayHours(r.date ?? "");
     const diff = wh != null ? wh - workdayHours : null;
     return {
       ...r,

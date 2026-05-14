@@ -401,6 +401,13 @@ export const GetSettingsResponse = zod.object({
   lateThresholdMinutes: zod.number(),
   officeEndTime: zod.string().optional(),
   workdayHours: zod.number().optional(),
+  mondayWorkdayHours: zod.number().nullish(),
+  tuesdayWorkdayHours: zod.number().nullish(),
+  wednesdayWorkdayHours: zod.number().nullish(),
+  thursdayWorkdayHours: zod.number().nullish(),
+  fridayWorkdayHours: zod.number().nullish(),
+  saturdayWorkdayHours: zod.number().nullish(),
+  sundayWorkdayHours: zod.number().nullish(),
 });
 
 /**
@@ -411,6 +418,13 @@ export const UpdateSettingsBody = zod.object({
   lateThresholdMinutes: zod.number().optional(),
   officeEndTime: zod.string().optional(),
   workdayHours: zod.number().optional(),
+  mondayWorkdayHours: zod.number().nullish(),
+  tuesdayWorkdayHours: zod.number().nullish(),
+  wednesdayWorkdayHours: zod.number().nullish(),
+  thursdayWorkdayHours: zod.number().nullish(),
+  fridayWorkdayHours: zod.number().nullish(),
+  saturdayWorkdayHours: zod.number().nullish(),
+  sundayWorkdayHours: zod.number().nullish(),
 });
 
 export const UpdateSettingsResponse = zod.object({
@@ -419,6 +433,13 @@ export const UpdateSettingsResponse = zod.object({
   lateThresholdMinutes: zod.number(),
   officeEndTime: zod.string().optional(),
   workdayHours: zod.number().optional(),
+  mondayWorkdayHours: zod.number().nullish(),
+  tuesdayWorkdayHours: zod.number().nullish(),
+  wednesdayWorkdayHours: zod.number().nullish(),
+  thursdayWorkdayHours: zod.number().nullish(),
+  fridayWorkdayHours: zod.number().nullish(),
+  saturdayWorkdayHours: zod.number().nullish(),
+  sundayWorkdayHours: zod.number().nullish(),
 });
 
 /**

@@ -12,4 +12,18 @@ export interface AttendanceSettings {
   lateThresholdMinutes: number;
   officeEndTime?: string;
   workdayHours?: number;
+  /** @nullable */
+  mondayWorkdayHours?: number | null;
+  /** @nullable */
+  tuesdayWorkdayHours?: number | null;
+  /** @nullable */
+  wednesdayWorkdayHours?: number | null;
+  /** @nullable */
+  thursdayWorkdayHours?: number | null;
+  /** @nullable */
+  fridayWorkdayHours?: number | null;
+  /** @nullable */
+  saturdayWorkdayHours?: number | null;
+  /** @nullable */
+  sundayWorkdayHours?: number | null;
 }

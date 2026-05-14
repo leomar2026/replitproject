@@ -8,6 +8,13 @@ export const settingsTable = pgTable("settings", {
   lateThresholdMinutes: integer("late_threshold_minutes").notNull().default(15),
   officeEndTime: text("office_end_time").notNull().default("17:00"),
   workdayHours: real("workday_hours").notNull().default(8),
+  mondayWorkdayHours: real("monday_workday_hours"),
+  tuesdayWorkdayHours: real("tuesday_workday_hours"),
+  wednesdayWorkdayHours: real("wednesday_workday_hours"),
+  thursdayWorkdayHours: real("thursday_workday_hours"),
+  fridayWorkdayHours: real("friday_workday_hours"),
+  saturdayWorkdayHours: real("saturday_workday_hours"),
+  sundayWorkdayHours: real("sunday_workday_hours"),
 });
 
 export const insertSettingsSchema = createInsertSchema(settingsTable).omit({ id: true });
