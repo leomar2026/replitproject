@@ -750,6 +750,10 @@ components:
           type: ["string", "null"]
         workingHours:
           type: ["number", "null"]
+        overtimeHours:
+          type: ["number", "null"]
+        undertimeHours:
+          type: ["number", "null"]
         status:
           type: string
           enum: [present, late, absent, half_day]

@@ -174,6 +174,8 @@ export const ListAttendanceResponseItem = zod.object({
   timeOutLongitude: zod.number().nullish(),
   timeOutLocationAddress: zod.string().nullish(),
   workingHours: zod.number().nullish(),
+  overtimeHours: zod.number().nullish(),
+  undertimeHours: zod.number().nullish(),
   status: zod.enum(["present", "late", "absent", "half_day"]).optional(),
   createdAt: zod.string().optional(),
 });
@@ -220,6 +222,8 @@ export const TimeOutResponse = zod.object({
   timeOutLongitude: zod.number().nullish(),
   timeOutLocationAddress: zod.string().nullish(),
   workingHours: zod.number().nullish(),
+  overtimeHours: zod.number().nullish(),
+  undertimeHours: zod.number().nullish(),
   status: zod.enum(["present", "late", "absent", "half_day"]).optional(),
   createdAt: zod.string().optional(),
 });
@@ -249,6 +253,8 @@ export const GetTodayAttendanceResponse = zod.object({
         timeOutLongitude: zod.number().nullish(),
         timeOutLocationAddress: zod.string().nullish(),
         workingHours: zod.number().nullish(),
+        overtimeHours: zod.number().nullish(),
+        undertimeHours: zod.number().nullish(),
         status: zod.enum(["present", "late", "absent", "half_day"]).optional(),
         createdAt: zod.string().optional(),
       }),
@@ -281,6 +287,8 @@ export const ListEmployeeHistoryResponseItem = zod.object({
   timeOutLongitude: zod.number().nullish(),
   timeOutLocationAddress: zod.string().nullish(),
   workingHours: zod.number().nullish(),
+  overtimeHours: zod.number().nullish(),
+  undertimeHours: zod.number().nullish(),
   status: zod.enum(["present", "late", "absent", "half_day"]).optional(),
   createdAt: zod.string().optional(),
 });
@@ -342,6 +350,8 @@ export const GetRecentActivityResponseItem = zod.object({
   timeOutLongitude: zod.number().nullish(),
   timeOutLocationAddress: zod.string().nullish(),
   workingHours: zod.number().nullish(),
+  overtimeHours: zod.number().nullish(),
+  undertimeHours: zod.number().nullish(),
   status: zod.enum(["present", "late", "absent", "half_day"]).optional(),
   createdAt: zod.string().optional(),
 });
@@ -375,6 +385,8 @@ export const ExportReportResponseItem = zod.object({
   timeOutLongitude: zod.number().nullish(),
   timeOutLocationAddress: zod.string().nullish(),
   workingHours: zod.number().nullish(),
+  overtimeHours: zod.number().nullish(),
+  undertimeHours: zod.number().nullish(),
   status: zod.enum(["present", "late", "absent", "half_day"]).optional(),
   createdAt: zod.string().optional(),
 });

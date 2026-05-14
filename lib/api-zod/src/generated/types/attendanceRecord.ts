@@ -32,6 +32,10 @@ export interface AttendanceRecord {
   timeOutLocationAddress?: string | null;
   /** @nullable */
   workingHours?: number | null;
+  /** @nullable */
+  overtimeHours?: number | null;
+  /** @nullable */
+  undertimeHours?: number | null;
   status?: AttendanceRecordStatus;
   createdAt?: string;
 }

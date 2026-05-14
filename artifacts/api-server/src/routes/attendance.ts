@@ -29,8 +29,13 @@ function computeWorkingHours(timeIn: string, timeOut: string): number {
   return Math.max(0, (outSec - inSec) / 3600);
 }
 
-async function getStatus(timeIn: string): Promise<string> {
+async function getSettings() {
   const [settings] = await db.select().from(settingsTable).limit(1);
+  return settings;
+}
+
+async function getStatus(timeIn: string): Promise<string> {
+  const settings = await getSettings();
   const officeStart = settings?.officeStartTime ?? "08:00";
   const threshold = settings?.lateThresholdMinutes ?? 15;
 
@@ -41,6 +46,25 @@ async function getStatus(timeIn: string): Promise<string> {
   const timeInMinutes = th * 60 + tm;
 
   return timeInMinutes > officeMinutes ? "late" : "present";
+}
+
+function computeOvertimeUndertime(
+  workingHours: number | null,
+  workdayHours: number
+): { overtimeHours: number | null; undertimeHours: number | null } {
+  if (workingHours == null) return { overtimeHours: null, undertimeHours: null };
+  const diff = workingHours - workdayHours;
+  return {
+    overtimeHours: diff > 0 ? Math.round(diff * 100) / 100 : 0,
+    undertimeHours: diff < 0 ? Math.round(-diff * 100) / 100 : 0,
+  };
+}
+
+function enrichRecords<T extends { workingHours: number | null }>(
+  records: T[],
+  workdayHours: number
+): (T & { overtimeHours: number | null; undertimeHours: number | null })[] {
+  return records.map((r) => ({ ...r, ...computeOvertimeUndertime(r.workingHours, workdayHours) }));
 }
 
 const ATTENDANCE_SELECT = {
@@ -89,8 +113,10 @@ router.get("/attendance", requireAuth, async (req: Request, res: Response): Prom
     query = query.where(and(...conditions));
   }
 
-  const records = await query.orderBy(attendanceTable.date, attendanceTable.createdAt);
-  res.json(records);
+  const rawRecords = await query.orderBy(attendanceTable.date, attendanceTable.createdAt);
+  const settings = await getSettings();
+  const workdayHours = settings?.workdayHours ?? 8;
+  res.json(enrichRecords(rawRecords, workdayHours));
 });
 
 router.post("/attendance", async (req: Request, res: Response): Promise<void> => {
@@ -211,7 +237,11 @@ router.get("/attendance/today/:employeeId", async (req: Request, res: Response):
     .leftJoin(employeesTable, eq(attendanceTable.employeeId, employeesTable.employeeId))
     .where(and(eq(attendanceTable.employeeId, params.data.employeeId), eq(attendanceTable.date, today)));
 
-  res.json({ record: record ?? null });
+  if (!record) { res.json({ record: null }); return; }
+  const settings = await getSettings();
+  const workdayHours = settings?.workdayHours ?? 8;
+  const enriched = enrichRecords([record], workdayHours)[0];
+  res.json({ record: enriched });
 });
 
 router.get("/attendance/history", requireAuth, async (req: Request, res: Response): Promise<void> => {
@@ -233,8 +263,10 @@ router.get("/attendance/history", requireAuth, async (req: Request, res: Respons
   if (from) conditions.push(gte(attendanceTable.date, from));
   if (to) conditions.push(lte(attendanceTable.date, to));
 
-  const records = await query.where(and(...conditions)).orderBy(attendanceTable.date);
-  res.json(records);
+  const rawRecords = await query.where(and(...conditions)).orderBy(attendanceTable.date);
+  const settings = await getSettings();
+  const workdayHours = settings?.workdayHours ?? 8;
+  res.json(enrichRecords(rawRecords, workdayHours));
 });
 
 export default router;

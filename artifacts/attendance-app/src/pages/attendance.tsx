@@ -104,6 +104,8 @@ export default function Attendance() {
                   <TableHead>Department</TableHead>
                   <TableHead>Time In</TableHead>
                   <TableHead>Time Out</TableHead>
+                  <TableHead>Hours</TableHead>
+                  <TableHead>OT / UT</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
@@ -111,25 +113,43 @@ export default function Attendance() {
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-10 text-muted-foreground">
+                    <TableCell colSpan={9} className="text-center py-10 text-muted-foreground">
                       Loading records...
                     </TableCell>
                   </TableRow>
                 ) : records?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-10 text-muted-foreground">
+                    <TableCell colSpan={9} className="text-center py-10 text-muted-foreground">
                       No records found for the selected filters.
                     </TableCell>
                   </TableRow>
                 ) : (
-                  records?.map((record) => (
+                  records?.map((record) => {
+                    const ot = record.overtimeHours;
+                    const ut = record.undertimeHours;
+                    const hasTimeOut = !!record.timeOut;
+                    return (
                     <TableRow key={record.id}>
                       <TableCell className="font-mono text-sm">{record.employeeId}</TableCell>
                       <TableCell className="font-medium">{record.employeeName}</TableCell>
                       <TableCell>{record.department}</TableCell>
                       <TableCell>{record.timeIn ? format(new Date(`${record.date}T${record.timeIn}`), "hh:mm a") : "--"}</TableCell>
                       <TableCell>{record.timeOut ? format(new Date(`${record.date}T${record.timeOut}`), "hh:mm a") : "--"}</TableCell>
-                      <TableCell className="max-w-[200px] truncate" title={record.locationAddress || ""}>
+                      <TableCell className="tabular-nums text-sm">
+                        {record.workingHours != null ? `${record.workingHours.toFixed(2)}h` : "--"}
+                      </TableCell>
+                      <TableCell>
+                        {!hasTimeOut ? (
+                          <span className="text-muted-foreground text-xs">--</span>
+                        ) : ot != null && ot > 0 ? (
+                          <span className="text-green-600 font-medium text-sm tabular-nums">+{ot.toFixed(2)}h OT</span>
+                        ) : ut != null && ut > 0 ? (
+                          <span className="text-red-500 font-medium text-sm tabular-nums">-{ut.toFixed(2)}h UT</span>
+                        ) : (
+                          <span className="text-muted-foreground text-xs">On time</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="max-w-[160px] truncate" title={record.locationAddress || ""}>
                         {record.locationAddress || "--"}
                       </TableCell>
                       <TableCell>
@@ -144,7 +164,8 @@ export default function Attendance() {
                         </Badge>
                       </TableCell>
                     </TableRow>
-                  ))
+                    );
+                  })
                 )}
               </TableBody>
             </Table>

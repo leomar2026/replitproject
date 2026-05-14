@@ -1,6 +1,6 @@
 import { Router, type IRouter, type Request, type Response } from "express";
 import { eq, and, gte, lte } from "drizzle-orm";
-import { db, attendanceTable, employeesTable } from "@workspace/db";
+import { db, attendanceTable, employeesTable, settingsTable } from "@workspace/db";
 import { ExportReportQueryParams } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/auth.js";
 
@@ -45,7 +45,20 @@ router.get("/reports/export", requireAuth, async (req: Request, res: Response): 
     query = query.where(and(...conditions));
   }
 
-  const records = await query.orderBy(attendanceTable.date);
+  const rawRecords = await query.orderBy(attendanceTable.date);
+
+  const [settings] = await db.select().from(settingsTable).limit(1);
+  const workdayHours = settings?.workdayHours ?? 8;
+
+  const records = rawRecords.map((r) => {
+    const wh = r.workingHours;
+    const diff = wh != null ? wh - workdayHours : null;
+    return {
+      ...r,
+      overtimeHours: diff != null && diff > 0 ? Math.round(diff * 100) / 100 : diff != null ? 0 : null,
+      undertimeHours: diff != null && diff < 0 ? Math.round(-diff * 100) / 100 : diff != null ? 0 : null,
+    };
+  });
 
   if (format === "json") {
     res.json(records);
@@ -60,6 +73,8 @@ router.get("/reports/export", requireAuth, async (req: Request, res: Response): 
     "Time In",
     "Time Out",
     "Working Hours",
+    "Overtime Hours",
+    "Undertime Hours",
     "GPS Location",
     "Address",
     "Status",
@@ -73,6 +88,8 @@ router.get("/reports/export", requireAuth, async (req: Request, res: Response): 
     r.timeIn ?? "",
     r.timeOut ?? "",
     r.workingHours != null ? r.workingHours.toFixed(2) : "",
+    r.overtimeHours != null ? r.overtimeHours.toFixed(2) : "",
+    r.undertimeHours != null ? r.undertimeHours.toFixed(2) : "",
     r.latitude != null && r.longitude != null ? `${r.latitude},${r.longitude}` : "",
     r.locationAddress ?? "",
     r.status ?? "",
