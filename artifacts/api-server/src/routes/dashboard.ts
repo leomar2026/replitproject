@@ -5,8 +5,10 @@ import { requireAuth } from "../middlewares/auth.js";
 
 const router: IRouter = Router();
 
+const TZ = "Asia/Riyadh";
+
 function getToday(): string {
-  return new Date().toISOString().split("T")[0];
+  return new Date().toLocaleDateString("en-CA", { timeZone: TZ });
 }
 
 router.get("/dashboard/stats", requireAuth, async (_req: Request, res: Response): Promise<void> => {

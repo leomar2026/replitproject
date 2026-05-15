@@ -13,12 +13,14 @@ import { requireAuth } from "../middlewares/auth.js";
 
 const router: IRouter = Router();
 
+const TZ = "Asia/Riyadh";
+
 function getToday(): string {
-  return new Date().toISOString().split("T")[0];
+  return new Date().toLocaleDateString("en-CA", { timeZone: TZ });
 }
 
 function getCurrentTime(): string {
-  return new Date().toTimeString().slice(0, 8);
+  return new Date().toLocaleTimeString("en-GB", { timeZone: TZ, hour12: false });
 }
 
 function computeWorkingHours(timeIn: string, timeOut: string): number {
