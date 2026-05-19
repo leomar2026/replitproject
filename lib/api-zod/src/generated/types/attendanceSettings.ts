@@ -26,4 +26,14 @@ export interface AttendanceSettings {
   saturdayWorkdayHours?: number | null;
   /** @nullable */
   sundayWorkdayHours?: number | null;
+  /** @nullable */
+  companyName?: string | null;
+  /** @nullable */
+  companyLogo?: string | null;
+  /** @nullable */
+  companyAddress?: string | null;
+  /** @nullable */
+  companyPhone?: string | null;
+  /** @nullable */
+  companyEmail?: string | null;
 }

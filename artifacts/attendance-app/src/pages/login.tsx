@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Lock } from "lucide-react";
-import logoSrc from "@assets/Logo_1778397631519.png";
+import { useCompany } from "@/hooks/use-company";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -28,6 +28,7 @@ export default function Login() {
   const [, setLocation] = useLocation();
   const loginMutation = useLogin();
   const [error, setError] = useState("");
+  const company = useCompany();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -57,7 +58,8 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
       <Card className="w-full max-w-md shadow-lg border-primary/10">
         <CardHeader className="space-y-2 text-center pb-6">
-          <img src={logoSrc} alt="Electro Power" className="h-16 w-16 rounded-xl object-cover mx-auto mb-2" />
+          <img src={company.logo} alt={company.name} className="h-16 w-16 rounded-xl object-cover mx-auto mb-2" />
+          {company.name !== "Electro Power" && <p className="text-sm font-semibold text-foreground">{company.name}</p>}
           <CardTitle className="text-2xl font-bold tracking-tight">Admin Login</CardTitle>
           <CardDescription>Enter your credentials to access the dashboard</CardDescription>
         </CardHeader>

@@ -864,6 +864,16 @@ components:
           type: ["number", "null"]
         sundayWorkdayHours:
           type: ["number", "null"]
+        companyName:
+          type: ["string", "null"]
+        companyLogo:
+          type: ["string", "null"]
+        companyAddress:
+          type: ["string", "null"]
+        companyPhone:
+          type: ["string", "null"]
+        companyEmail:
+          type: ["string", "null"]
 
     AttendanceSettingsUpdate:
       type: object
@@ -890,6 +900,16 @@ components:
           type: ["number", "null"]
         sundayWorkdayHours:
           type: ["number", "null"]
+        companyName:
+          type: ["string", "null"]
+        companyLogo:
+          type: ["string", "null"]
+        companyAddress:
+          type: ["string", "null"]
+        companyPhone:
+          type: ["string", "null"]
+        companyEmail:
+          type: ["string", "null"]
 
     BiometricEmployeeInput:
       type: object

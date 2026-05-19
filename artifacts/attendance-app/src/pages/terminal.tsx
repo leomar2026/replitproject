@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Search, CheckCircle2, User, CalendarDays, Fingerprint, Loader2, ShieldCheck } from "lucide-react";
-import logoSrc from "@assets/Logo_1778397631519.png";
+import { useCompany } from "@/hooks/use-company";
 import { startRegistration, startAuthentication } from "@simplewebauthn/browser";
 import type { RegistrationResponseJSON, AuthenticationResponseJSON } from "@simplewebauthn/types";
 
@@ -259,12 +259,13 @@ export default function Terminal() {
 
   const timeInLocation = timeInGeo.location;
   const timeOutLocation = timeOutGeo.location;
+  const company = useCompany();
 
   return (
     <div className="min-h-screen bg-muted/20 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         <div className="text-center mb-10">
-          <img src={logoSrc} alt="Electro Power" className="h-16 w-16 rounded-2xl object-cover mx-auto mb-6 shadow-md" />
+          <img src={company.logo} alt={company.name} className="h-16 w-16 rounded-2xl object-cover mx-auto mb-6 shadow-md" />
           <h1 className="text-6xl font-bold tracking-tight text-foreground font-mono tabular-nums">
             {currentTime.toLocaleTimeString('en-US', { hour12: false })}
           </h1>

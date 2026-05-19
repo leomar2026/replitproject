@@ -5,12 +5,13 @@ import { useGetMe } from "@workspace/api-client-react";
 import { clearAuthToken } from "@/lib/auth";
 import { LayoutDashboard, Users, Clock, Settings, LogOut, Sun, Moon } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
-import logoSrc from "@assets/Logo_1778397631519.png";
+import { useCompany } from "@/hooks/use-company";
 
 export function AdminLayout({ children }: { children: ReactNode }) {
   const [location, setLocation] = useLocation();
   const { data: user } = useGetMe();
   const { theme, setTheme } = useTheme();
+  const company = useCompany();
 
   const handleLogout = () => {
     clearAuthToken();
@@ -30,9 +31,9 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       <aside className="w-full md:w-64 bg-card border-r border-border flex flex-col shrink-0">
         <div className="p-6 border-b border-border">
           <div className="flex items-center gap-3">
-            <img src={logoSrc} alt="Electro Power" className="h-10 w-10 rounded object-cover" />
+            <img src={company.logo} alt={company.name} className="h-10 w-10 rounded object-cover" />
             <div>
-              <div className="font-bold text-sm text-foreground tracking-tight leading-tight">Electro Power</div>
+              <div className="font-bold text-sm text-foreground tracking-tight leading-tight">{company.name}</div>
               <div className="text-xs text-muted-foreground">Attendance System</div>
             </div>
           </div>

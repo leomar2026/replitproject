@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,9 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { Clock, AlertTriangle, CalendarDays } from "lucide-react";
+import { Clock, AlertTriangle, CalendarDays, Building2, Upload, X } from "lucide-react";
+import defaultLogoSrc from "@assets/Logo_1778397631519.png";
 
 const dayField = z.preprocess(
   (v) => (v === "" || v == null ? null : Number(v)),
@@ -28,6 +30,11 @@ const settingsSchema = z.object({
   fridayWorkdayHours: dayField,
   saturdayWorkdayHours: dayField,
   sundayWorkdayHours: dayField,
+  companyName: z.string().optional(),
+  companyLogo: z.string().nullable().optional(),
+  companyAddress: z.string().optional(),
+  companyPhone: z.string().optional(),
+  companyEmail: z.string().email("Must be a valid email").optional().or(z.literal("")),
 });
 
 type SettingsFormValues = z.infer<typeof settingsSchema>;
@@ -47,6 +54,8 @@ export default function Settings() {
   const updateMutation = useUpdateSettings();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
@@ -62,6 +71,11 @@ export default function Settings() {
       fridayWorkdayHours: null,
       saturdayWorkdayHours: null,
       sundayWorkdayHours: null,
+      companyName: "",
+      companyLogo: null,
+      companyAddress: "",
+      companyPhone: "",
+      companyEmail: "",
     }
   });
 
@@ -79,11 +93,36 @@ export default function Settings() {
         fridayWorkdayHours: settings.fridayWorkdayHours ?? null,
         saturdayWorkdayHours: settings.saturdayWorkdayHours ?? null,
         sundayWorkdayHours: settings.sundayWorkdayHours ?? null,
+        companyName: settings.companyName ?? "",
+        companyLogo: settings.companyLogo ?? null,
+        companyAddress: settings.companyAddress ?? "",
+        companyPhone: settings.companyPhone ?? "",
+        companyEmail: settings.companyEmail ?? "",
       });
+      if (settings.companyLogo) setLogoPreview(settings.companyLogo);
     }
   }, [settings, form]);
 
   const defaultHours = form.watch("workdayHours");
+  const companyLogoValue = form.watch("companyLogo");
+
+  function handleLogoFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      form.setValue("companyLogo", dataUrl);
+      setLogoPreview(dataUrl);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearLogo() {
+    form.setValue("companyLogo", null);
+    setLogoPreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
 
   const onSubmit = (values: SettingsFormValues) => {
     updateMutation.mutate({
@@ -99,6 +138,11 @@ export default function Settings() {
         fridayWorkdayHours: values.fridayWorkdayHours ?? null,
         saturdayWorkdayHours: values.saturdayWorkdayHours ?? null,
         sundayWorkdayHours: values.sundayWorkdayHours ?? null,
+        companyName: values.companyName || null,
+        companyLogo: values.companyLogo ?? null,
+        companyAddress: values.companyAddress || null,
+        companyPhone: values.companyPhone || null,
+        companyEmail: values.companyEmail || null,
       }
     }, {
       onSuccess: () => {
@@ -110,6 +154,8 @@ export default function Settings() {
 
   if (isLoading) return <div className="animate-pulse h-96 bg-muted rounded-xl"></div>;
 
+  const displayLogo = logoPreview || companyLogoValue || defaultLogoSrc;
+
   return (
     <div className="space-y-6">
       <div>
@@ -120,6 +166,118 @@ export default function Settings() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
+          {/* Company Details */}
+          <Card className="max-w-2xl">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building2 className="w-5 h-5" />
+                Company Details
+              </CardTitle>
+              <CardDescription>Displayed on the login screen, terminal kiosk, and sidebar</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+
+              {/* Logo upload */}
+              <div className="flex items-start gap-6">
+                <div className="relative shrink-0">
+                  <img
+                    src={displayLogo}
+                    alt="Company logo"
+                    className="h-20 w-20 rounded-xl object-cover border border-border shadow-sm"
+                  />
+                  {(logoPreview || companyLogoValue) && (
+                    <button
+                      type="button"
+                      onClick={clearLogo}
+                      className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium mb-1">Company Logo</p>
+                  <p className="text-xs text-muted-foreground mb-3">PNG, JPG or SVG recommended. Square images work best.</p>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleLogoFile}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    {logoPreview || companyLogoValue ? "Change Logo" : "Upload Logo"}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="companyName"
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Electro Power" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="companyPhone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone</FormLabel>
+                      <FormControl>
+                        <Input placeholder="+966 xx xxx xxxx" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="companyEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="hr@company.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="companyAddress"
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Company address..." rows={2} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Time Rules */}
           <Card className="max-w-2xl">
             <CardHeader>
               <CardTitle>Time Rules</CardTitle>
@@ -198,6 +356,7 @@ export default function Settings() {
             </CardContent>
           </Card>
 
+          {/* Day-Specific Hours */}
           <Card className="max-w-2xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

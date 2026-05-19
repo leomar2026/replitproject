@@ -15,6 +15,11 @@ export const settingsTable = pgTable("settings", {
   fridayWorkdayHours: real("friday_workday_hours"),
   saturdayWorkdayHours: real("saturday_workday_hours"),
   sundayWorkdayHours: real("sunday_workday_hours"),
+  companyName: text("company_name"),
+  companyLogo: text("company_logo"),
+  companyAddress: text("company_address"),
+  companyPhone: text("company_phone"),
+  companyEmail: text("company_email"),
 });
 
 export const insertSettingsSchema = createInsertSchema(settingsTable).omit({ id: true });
